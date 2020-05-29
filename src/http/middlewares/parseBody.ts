@@ -1,13 +1,12 @@
-import { HttpResponse, HttpRequest } from "uWebSockets.js";
-
-export default async (res: HttpResponse, req: HttpRequest): Promise<any> => {
-
-
-    /**
+/**
      * original code: https://github.com/uNetworking/uWebSockets.js/blob/master/examples/JsonPost.js
      * modifications: added types; wrapped in a Promise
      */
 
+import { HttpResponse, HttpRequest } from "uWebSockets.js";
+
+
+export default async (res: HttpResponse, req: HttpRequest): Promise<any> => {
 
   const parsedBody = await new Promise( ( resolve ) => {
 
