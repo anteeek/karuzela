@@ -6,13 +6,18 @@
   "license": "Apache 2.0",
   "private": false,
   "devDependencies": {
+    "@types/uws": "^0.13.2",
     "jest": "^26.0.1",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.3"
+    "typescript": "^3.9.3",
+    "uWebSockets.js": "uNetworking/uWebSockets.js#v17.6.0"
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "jest"
+  },
+  "peerDependencies": {
+    "uWebSockets.js": "uNetworking/uWebSockets.js#v17.6.0"
   }
 }

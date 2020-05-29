@@ -499,6 +499,11 @@
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==
 
+"@types/events@*":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
+  integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
+
 "@types/graceful-fs@^4.1.2":
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/@types/graceful-fs/-/graceful-fs-4.1.3.tgz#039af35fe26bec35003e8d86d2ee9c586354348f"
@@ -545,6 +550,14 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
+
+"@types/uws@^0.13.2":
+  version "0.13.2"
+  resolved "https://registry.yarnpkg.com/@types/uws/-/uws-0.13.2.tgz#e3563c636132c171a4c9079620c71aba402ceb00"
+  integrity sha512-PtSuctnHZPMJKGDvpBpX+3EvL8PPcErNOv6A0HacFJV1954ggrTZusLVrZjqBrActKf/C91dbdl/piOmLMeg8A==
+  dependencies:
+    "@types/events" "*"
+    "@types/node" "*"
 
 "@types/yargs-parser@*":
   version "15.0.0"
@@ -3327,6 +3340,10 @@ typescript@^3.9.3:
   version "3.9.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.3.tgz#d3ac8883a97c26139e42df5e93eeece33d610b8a"
   integrity sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
+
+uWebSockets.js@uNetworking/uWebSockets.js#v17.6.0:
+  version "17.6.0"
+  resolved "https://codeload.github.com/uNetworking/uWebSockets.js/tar.gz/a24c50180536c1edbc112ba63cda7d07df1b4a93"
 
 union-value@^1.0.0:
   version "1.0.1"
