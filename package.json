@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "dist/index.js",
   "author": "@anteeek",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "private": false,
   "devDependencies": {
     "@types/uws": "^0.13.2",
