@@ -19,5 +19,6 @@
   },
   "peerDependencies": {
     "uWebSockets.js": "uNetworking/uWebSockets.js#v17.6.0"
-  }
+  },
+  "dependencies": {}
 }
