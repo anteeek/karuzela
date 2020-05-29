@@ -1,1 +1,1 @@
-export { default as WebsocketCarouselFactory } from "./carousel";
+export { default as default } from "./carousel";
