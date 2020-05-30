@@ -1,3 +1,3 @@
 export { default as default } from "./carousel";
 
-export * from "./middlewares";
+export * as HttpMiddlewares from "./middlewares";

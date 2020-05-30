@@ -1,8 +1,22 @@
-import { HttpRequest } from "uWebSockets.js";
+import { WebSocket } from "uWebSockets.js";
 
-type WebsocketHandler = (ws: WebSocket, req: HttpRequest) => void;
 
-type WebsocketErrorHandler = (err: any, ws: WebSocket, req: HttpRequest) => void;
+type WebsocketHandler = (
+    ws: WebSocket, 
+    message: ArrayBuffer, 
+    isBinary: boolean, 
+    context?: WebsocketHandlerContext
+) => void;
+
+type WebsocketErrorHandler = (
+    err: any, 
+    ws: WebSocket, 
+    message: ArrayBuffer, 
+    isBinary: boolean, 
+    context?: WebsocketHandlerContext
+) => void;
+
+export type WebsocketHandlerContext = { [key: string]: any };
 
 type WebsocketCarousel = (eventHandler: WebsocketHandler) => WebsocketHandler;
 
@@ -11,6 +25,7 @@ interface IWebsocketCarouselOptions {
     errorHandler: WebsocketErrorHandler;
 }
 
+
 export default function WebsocketCarouselFactory({
     middlewares,
     errorHandler,
@@ -18,19 +33,20 @@ export default function WebsocketCarouselFactory({
     
     return function(eventHandler: WebsocketHandler): WebsocketHandler {
 
+        const context = {};
 
-        return (ws: WebSocket, req: HttpRequest) => {
+        return (ws: WebSocket, message: ArrayBuffer, isBinary: boolean) => {
     
             
             try {
                 for(let i=0; i < middlewares.length; i++) 
-                    middlewares[i](ws, req);
+                    middlewares[i](ws, message, isBinary, context);
                 
-                eventHandler(ws, req);
+                eventHandler(ws, message, isBinary, context);
             }
             catch(error) {
                 
-                errorHandler(error, ws, req);
+                errorHandler(error, ws, message, isBinary, context);
 
             }
 
