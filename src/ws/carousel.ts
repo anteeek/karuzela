@@ -1,6 +1,5 @@
 import { WebSocket } from "uWebSockets.js";
 
-
 type WebsocketHandler = (
     ws: WebSocket, 
     message: ArrayBuffer, 
