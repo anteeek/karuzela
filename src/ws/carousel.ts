@@ -4,7 +4,7 @@ type WebsocketHandler = (
     ws: WebSocket, 
     message: ArrayBuffer, 
     isBinary: boolean, 
-    context?: WebsocketHandlerContext
+    context: WebsocketHandlerContext
 ) => void;
 
 type WebsocketErrorHandler = (
@@ -20,7 +20,7 @@ export type WebsocketHandlerContext = { [key: string]: any };
 type WebsocketCarousel = (eventHandler: WebsocketHandler) => WebsocketHandler;
 
 interface IWebsocketCarouselOptions {
-    middlewares: Array<WebsocketHandler>;
+    middlewares: Array< WebsocketHandler >;
     errorHandler: WebsocketErrorHandler;
 }
 
