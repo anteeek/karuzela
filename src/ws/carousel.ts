@@ -1,4 +1,4 @@
-import { WebSocket } from "uWebSockets.js";
+import { WebSocket, WebSocketBehavior } from "uWebSockets.js";
 
 type WebsocketHandler = (
     ws: WebSocket, 
@@ -17,7 +17,7 @@ type WebsocketErrorHandler = (
 
 export type WebsocketHandlerContext = { [key: string]: any };
 
-type WebsocketCarousel = (eventHandler: WebsocketHandler) => WebsocketHandler;
+type WebsocketCarousel = (eventHandler: WebsocketHandler) => WebSocketBehavior["message"];
 
 interface IWebsocketCarouselOptions {
     middlewares: Array< WebsocketHandler >;
@@ -30,7 +30,7 @@ export default function WebsocketCarouselFactory({
     errorHandler,
 }: IWebsocketCarouselOptions): WebsocketCarousel  {
     
-    return function(eventHandler: WebsocketHandler): WebsocketHandler {
+    return function(eventHandler: WebsocketHandler): WebSocketBehavior["message"] {
 
         const context = {};
 
