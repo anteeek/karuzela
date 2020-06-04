@@ -7,7 +7,9 @@ export default async (res: HttpResponse, req: HttpRequest): Promise<any> => {
     let i=0;
     res.params = [];
 
-    while(req.getParameter(i) !== "")
+    while(req.getParameter(i) !== "") {
         res.params.push(req.getParameter(i));
+        i++;
+    }
     
 }
