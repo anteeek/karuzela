@@ -34,8 +34,7 @@ export default function WebsocketCarouselFactory({
 
         const context = {};
 
-        return (ws: WebSocket, message: ArrayBuffer, isBinary: boolean) => {
-    
+        return (ws: WebSocket, message: ArrayBuffer, isBinary: boolean) => {    
             
             try {
                 for(let i=0; i < middlewares.length; i++) 
@@ -44,6 +43,8 @@ export default function WebsocketCarouselFactory({
                 eventHandler(ws, message, isBinary, context);
             }
             catch(error) {
+
+                console.log(error);
                 
                 errorHandler(error, ws, message, isBinary, context);
 
