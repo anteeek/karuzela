@@ -2,7 +2,7 @@ import { HttpRequest, HttpResponse } from "uWebSockets.js";
 
 type HttpRequestHandler = (res: HttpResponse, req: HttpRequest) => Promise<void | HttpResponse>;
 
-type HttpErrorHandler = (err: any, res: HttpResponse, req: HttpRequest) => Promise<void | HttpResponse>;
+type HttpErrorHandler = (err: any, res: HttpResponse, req: HttpRequest) => void | HttpResponse | Promise<void | HttpResponse>;
 
 type HttpCarousel = (middlewares: Array<HttpRequestHandler>) => HttpRequestHandler;
 
@@ -33,6 +33,7 @@ export default function HttpCarouselFactory({
                     if(res.aborted)
                         break;
                     
+
                     const middlewareResult: HttpResponse | void = await middlewares[i](res, req);
     
                     if(didEndRequest(middlewareResult))
@@ -52,7 +53,6 @@ export default function HttpCarouselFactory({
     
     }   
 }
-
 
 function didEndRequest(result: HttpResponse | void): result is HttpResponse {
     return (typeof result) !== 'undefined'; 
