@@ -74,3 +74,10 @@ export default function HttpCarouselFactory({
     
     }   
 }
+
+/**
+ * Amazing monkeypatches adapted/taken from https://dev.to/mattkrick/replacing-express-with-uwebsockets-48ph
+ * res.end -> res._end 
+ * and
+ * onAborted
+ */
