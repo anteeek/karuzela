@@ -116,5 +116,35 @@ describe("HTTP Middlewares", () => {
         });
 
     });
+
+    describe("parseParams middleware", () => {
+
+        it("Should extract provided middlewares in the correct order", async () => {
+
+
+            app.get(`/:firstParam/:secondParam`, carousel([
+                middlewares.parseParams([
+                    "firstParam", "secondParam"
+                ]),
+                controller
+            ]));
+
+            const firstParamValue = "hehehe";
+            const secondParamValue = "isPies";
+
+            await fetcher(`/${firstParamValue}/${secondParamValue}`);
+
+            const calledWithRes = controller.mock.calls[0][0];
+
+            expect(
+                calledWithRes.params
+            ).toEqual({
+                firstParam: firstParamValue,
+                secondParam: secondParamValue
+            });
+
+        })
+
+    })
        
 });
