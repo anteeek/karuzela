@@ -9,10 +9,15 @@ describe("HTTP Carousel", () => {
 
 
     const app = uWS.App();
+    const listeningPort = 25000;
+    const baseUrl = `http://localhost:${listeningPort}`;
+
+    const fetcher = 
+        (path: string, options: any) => fetch(baseUrl+path, options);
 
     beforeAll( async () => {
         return new Promise( (resolve, reject) => {
-            app.listen("127.0.0.1", 25000, (listenSocket: any) => {
+            app.listen("127.0.0.1", listeningPort, (listenSocket: any) => {
                 if(listenSocket)
                     resolve();
                 else
@@ -39,11 +44,11 @@ describe("HTTP Carousel", () => {
             res.end(sentText);
         });
 
-        app.get("/api", carousel([
+        app.get("/text", carousel([
             localMiddleware
         ]));
         
-        const result = await fetch(`http://localhost:25000/api`, {
+        const result = await fetcher(`/text`, {
             method: "GET"
         }).then( response => response.text() );
 
