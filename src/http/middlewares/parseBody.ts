@@ -6,9 +6,9 @@
 import { HttpResponse, HttpRequest } from "uWebSockets.js";
 
 
-export default async (res: HttpResponse, req: HttpRequest): Promise<any> => {
+export default async function parseBody(res: HttpResponse, req: HttpRequest): Promise<any> {
 
-  const parsedBody = await new Promise( ( resolve ) => {
+  const parsedBody = await new Promise( ( resolve, reject ) => {
 
     let buffer: Buffer;
 
@@ -16,11 +16,20 @@ export default async (res: HttpResponse, req: HttpRequest): Promise<any> => {
       let chunk = Buffer.from(ab);
       if (isLast) {
           
-        if (buffer) 
-          resolve( JSON.parse( Buffer.concat([buffer, chunk]).toString() ) );
-         else 
-          resolve( JSON.parse( chunk.toString() ) );
-        
+        try {
+          const resolvedBody = buffer ? 
+            Buffer.concat([buffer, chunk]).toString()
+          :
+            chunk.toString();
+            
+          const parsed = JSON.parse(resolvedBody);
+
+          resolve(parsed);
+        }
+        catch (error) {
+          reject(error);
+        }
+
       } else {
 
         if (buffer) 

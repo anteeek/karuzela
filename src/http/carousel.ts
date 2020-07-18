@@ -65,34 +65,17 @@ function monkeypatchRes(res: HttpResponse) {
         return res._end(body)
     }
 
-    res._writeStatus = res.writeStatus;
-
-    res.writeStatus = (status: string) => {
-        if(res.done) {
-            console.error("warning: called res.writeStatus after request is done");
-            return res;
-        }
-        if(res.hasWrittenStatus) {
-            console.error("warning: called res.writeStatus multiple times");
-            return res;
-        }
-        res.hasWrittenStatus = true;
-
-        return res.writeStatus(status);
-    }
-
-    /**
-     * TODO: Possibly res.writeHeader ?????????
-     */
-
     res.onAborted(() => {
         res.done = true;
+
+        console.log(res.onAbortedHandlers)
+
         if(res.onAbortedHandlers) 
             res.onAbortedHandlers.forEach((f: TOnAbortedHandler) => f());
         
     });
     
-    res.onAbortedHandlers = (handler: TOnAbortedHandler) => {
+    res.onAborted = (handler: TOnAbortedHandler) => {
         res.onAbortedHandlers = res.onAbortedHandlers || [];
         res.onAbortedHandlers.push(handler)
         return res;

@@ -26,9 +26,10 @@ describe("HTTP Carousel", () => {
 
     const globalMiddleware = jest.fn();
     const errorHandler = jest.fn((error: any, res: HttpResponse, req: HttpRequest) => {
+        res.writeStatus("400 Bad Request");
         res.end(JSON.stringify({
             success: false,
-            error
+            error: error.message
         }))
     });
 
@@ -63,7 +64,7 @@ describe("HTTP Carousel", () => {
 
     it("Should call onError handler with appropiate error", async () => {
 
-        const errorMessage = "oops";
+        const errorMessage = "E";
 
         const failingController = jest.fn((res: HttpResponse, req: HttpRequest) => {
             throw new Error(errorMessage);
@@ -73,7 +74,14 @@ describe("HTTP Carousel", () => {
 
         const result = await fetcher(`/fail`);
 
-        console.log(result)
+        expect(result.statusText).toEqual(`Bad Request`);
+        
+        const body = await result.json();
+
+        expect(body).toMatchObject({
+            success: false,
+            error: errorMessage
+        });
     });
-    
+       
 });
