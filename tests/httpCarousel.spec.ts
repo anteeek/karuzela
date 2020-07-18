@@ -11,7 +11,7 @@ describe("HTTP Carousel", () => {
     const baseUrl = `http://localhost:${listeningPort}`;
 
     const fetcher = 
-        (path: string, options: any) => fetch(baseUrl+path, options);
+        (path: string, options?: any) => fetch(baseUrl+path, options);
 
     beforeAll( async () => {
         return new Promise( (resolve, reject) => {
@@ -23,18 +23,23 @@ describe("HTTP Carousel", () => {
             });
         })
     });
+
+    const globalMiddleware = jest.fn();
+    const errorHandler = jest.fn((error: any, res: HttpResponse, req: HttpRequest) => {
+        res.end(JSON.stringify({
+            success: false,
+            error
+        }))
+    });
+
+    const carousel = MakeHttpCarousel({
+        globalMiddlewares: [
+            globalMiddleware
+        ],
+        errorHandler
+    })
     
     it("Should just work", async () => {
-
-        const globalMiddleware = jest.fn();
-        const errorHandler = jest.fn();
-
-        const carousel = MakeHttpCarousel({
-            globalMiddlewares: [
-                globalMiddleware
-            ],
-            errorHandler
-        })
 
         const sentText = "hehehe";
 
@@ -51,7 +56,24 @@ describe("HTTP Carousel", () => {
         }).then( response => response.text() );
 
         expect(result).toEqual(sentText);
-        expect(localMiddleware).toHaveBeenCalled(); 
+        expect(localMiddleware).toHaveBeenCalledTimes(1); 
+        expect(globalMiddleware).toHaveBeenCalledTimes(1);
+        expect(errorHandler).not.toHaveBeenCalled();
+    });
+
+    it("Should call onError handler with appropiate error", async () => {
+
+        const errorMessage = "oops";
+
+        const failingController = jest.fn((res: HttpResponse, req: HttpRequest) => {
+            throw new Error(errorMessage);
+        });
+
+        app.get(`/fail`, carousel([ failingController ]));
+
+        const result = await fetcher(`/fail`);
+
+        console.log(result)
     });
     
 });

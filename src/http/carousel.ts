@@ -24,31 +24,9 @@ export default function HttpCarouselFactory({
         const middlewares: Array<HttpRequestHandler> = globalMiddlewares.concat(routeMiddlewares); 
 
         return async (res: HttpResponse, req: HttpRequest) => {
-    
-            res._end = res.end;
+        
+            monkeypatchRes(res);
 
-            res.end = (body: string) => {
-                if(res.done) {
-                    console.error("warning: called res.end multiple times");
-                    return res
-                }
-                res.done = true
-                return res._end(body)
-            }
-
-            res.onAborted(() => {
-                res.done = true;
-                if(res.onAbortedHandlers) 
-                  res.onAbortedHandlers.forEach((f: TOnAbortedHandler) => f());
-                
-            });
-            
-            res.onAbortedHandlers = (handler: TOnAbortedHandler) => {
-                res.onAbortedHandlers = res.onAbortedHandlers || [];
-                res.onAbortedHandlers.push(handler)
-                return res;
-            }
-    
             try {
     
                 for(let i=0; i < middlewares.length; i++) {
@@ -73,6 +51,52 @@ export default function HttpCarouselFactory({
         }
     
     }   
+}
+
+function monkeypatchRes(res: HttpResponse) {
+    res._end = res.end;
+
+    res.end = (body: string) => {
+        if(res.done) {
+            console.error("warning: called res.end multiple times");
+            return res
+        }
+        res.done = true
+        return res._end(body)
+    }
+
+    res._writeStatus = res.writeStatus;
+
+    res.writeStatus = (status: string) => {
+        if(res.done) {
+            console.error("warning: called res.writeStatus after request is done");
+            return res;
+        }
+        if(res.hasWrittenStatus) {
+            console.error("warning: called res.writeStatus multiple times");
+            return res;
+        }
+        res.hasWrittenStatus = true;
+
+        return res.writeStatus(status);
+    }
+
+    /**
+     * TODO: Possibly res.writeHeader ?????????
+     */
+
+    res.onAborted(() => {
+        res.done = true;
+        if(res.onAbortedHandlers) 
+            res.onAbortedHandlers.forEach((f: TOnAbortedHandler) => f());
+        
+    });
+    
+    res.onAbortedHandlers = (handler: TOnAbortedHandler) => {
+        res.onAbortedHandlers = res.onAbortedHandlers || [];
+        res.onAbortedHandlers.push(handler)
+        return res;
+    }
 }
 
 /**
