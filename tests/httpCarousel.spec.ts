@@ -2,8 +2,6 @@ import { MakeHttpCarousel } from "../src";
 
 import uWS, { HttpResponse, HttpRequest } from "uWebSockets.js";
 import fetch from "node-fetch";
-import { createNoSubstitutionTemplateLiteral } from "typescript";
-import { rejects } from "assert";
 
 describe("HTTP Carousel", () => {
 
