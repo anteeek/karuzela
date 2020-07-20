@@ -1,28 +1,15 @@
 import { MakeHttpCarousel } from "../src";
 
-import uWS, { HttpResponse, HttpRequest } from "uWebSockets.js";
-import fetch from "node-fetch";
+import { HttpResponse, HttpRequest } from "uWebSockets.js";
+import setup, { TTestingResources } from "./setup";
 
 describe("HTTP Carousel", () => {
 
+    let resources: TTestingResources;
 
-    const app = uWS.App();
-    const listeningPort = 25000;
-    const baseUrl = `http://localhost:${listeningPort}`;
-
-    const fetcher = 
-        (path: string, options?: any) => fetch(baseUrl+path, options);
-
-    beforeAll( async () => {
-        return new Promise( (resolve, reject) => {
-            app.listen("127.0.0.1", listeningPort, (listenSocket: any) => {
-                if(listenSocket)
-                    resolve();
-                else
-                    reject();
-            });
-        })
-    });
+    beforeAll(async () => {
+        resources = await setup(20055);
+    })    
 
     const globalMiddleware = jest.fn();
     const errorHandler = jest.fn((error: any, res: HttpResponse, req: HttpRequest) => {
@@ -48,11 +35,11 @@ describe("HTTP Carousel", () => {
             res.end(sentText);
         });
 
-        app.get("/text", carousel([
+        resources.app.get("/text", carousel([
             localMiddleware
         ]));
         
-        const result = await fetcher(`/text`, {
+        const result = await resources.fetcher(`/text`, {
             method: "GET"
         }).then( response => response.text() );
 
@@ -70,9 +57,9 @@ describe("HTTP Carousel", () => {
             throw new Error(errorMessage);
         });
 
-        app.get(`/fail`, carousel([ failingController ]));
+        resources.app.get(`/fail`, carousel([ failingController ]));
 
-        const result = await fetcher(`/fail`);
+        const result = await resources.fetcher(`/fail`);
 
         expect(result.statusText).toEqual(`Bad Request`);
         

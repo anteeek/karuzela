@@ -1,7 +1,4 @@
-import uWS from "uWebSockets.js";
-
-import yup from "yup";
-
+import * as yup from "yup";
 
 const schema = {
     websocketEvent: yup.object({

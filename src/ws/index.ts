@@ -7,15 +7,23 @@ export default ({ eventHandlers, fallback, binaryHandler, errorHandler }: TWebso
     return function websocketCarousel(ws: uWS.WebSocket, message: ArrayBuffer, isBinary: boolean) {
 
         try {
-            if(isBinary)
-                return binaryHandler(ws, message);
+            if(isBinary) {
+                if(!binaryHandler)
+                    return;
+                else
+                    return binaryHandler(ws, message);
+            }
         
             const parsedMessage = JSON.parse(Buffer.from(message).toString());
 
             const resolvedMessage = schema.websocketEvent.validateSync(parsedMessage)
 
-            if((typeof eventHandlers[resolvedMessage.type]) !== "function")
-                return fallback(ws, resolvedMessage);
+            if((!eventHandlers[resolvedMessage.type])) {
+                if(!fallback)
+                    return;
+                else
+                    return fallback(ws, resolvedMessage);
+            }
 
             return eventHandlers[resolvedMessage.type](ws, resolvedMessage.data);
         }
@@ -30,8 +38,8 @@ type TWebsocketCarouselOptions = {
     eventHandlers: {
         [key: string]: TWebsocketEventHandler;
     };
-    fallback: (ws: uWS.WebSocket, message: TWebsocketEvent) => void;
-    binaryHandler: (ws: uWS.WebSocket, message: ArrayBuffer) => void;
+    fallback?: (ws: uWS.WebSocket, message: TWebsocketEvent) => void;
+    binaryHandler?: (ws: uWS.WebSocket, message: ArrayBuffer) => void;
     errorHandler: (err: any, ws: uWS.WebSocket, message: ArrayBuffer, isBinary: boolean) => void;
 }
 

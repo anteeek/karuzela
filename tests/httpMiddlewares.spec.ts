@@ -1,26 +1,16 @@
 import { MakeHttpCarousel, HttpMiddlewares as middlewares } from "../src";
 
-import uWS, { HttpResponse, HttpRequest } from "uWebSockets.js";
-import fetch from "node-fetch";
+import { HttpResponse, HttpRequest } from "uWebSockets.js";
+
+import setup, { TTestingResources } from "./setup";
 
 describe("HTTP Middlewares", () => {
-    const app = uWS.App();
-    const listeningPort = 25001;
-    const baseUrl = `http://localhost:${listeningPort}`;
 
-    const fetcher = 
-        (path: string, options?: any) => fetch(baseUrl+path, options);
+    let resources: TTestingResources;
 
-    beforeAll( async () => {
-        return new Promise( (resolve, reject) => {
-            app.listen("127.0.0.1", listeningPort, (listenSocket: any) => {
-                if(listenSocket)
-                    resolve();
-                else
-                    reject("Failed to app.listen");
-            });
-        })
-    });
+    beforeAll(async () => {
+        resources = await setup(20005);
+    })    
 
     const globalMiddleware = jest.fn();
     const errorHandler = jest.fn((error: any, res: HttpResponse, req: HttpRequest) => {
@@ -50,7 +40,7 @@ describe("HTTP Middlewares", () => {
 
         it("Should parse valid JSON body", async () => {
 
-            app.post(`/json`, carousel([
+            resources.app.post(`/json`, carousel([
                 middlewares.parseBody,
                 controller
             ]));
@@ -59,7 +49,7 @@ describe("HTTP Middlewares", () => {
                 "yes": "no"
             }
 
-            await fetcher(`/json`, {
+            await resources.fetcher(`/json`, {
                 method: "POST",
                 body: JSON.stringify(sentObject)
             });
@@ -72,12 +62,12 @@ describe("HTTP Middlewares", () => {
 
         it("Should fail before controller on not-valid json body", async () => {
 
-            app.post(`/json`, carousel([
+            resources.app.post(`/json`, carousel([
                 middlewares.parseBody,
                 controller
             ]));
 
-            const result = await fetcher(`/json`, {
+            const result = await resources.fetcher(`/json`, {
                 method: "POST",
                 body: "fake json"
             });
@@ -95,14 +85,14 @@ describe("HTTP Middlewares", () => {
                 "Authorization": "123",
                 "Authentication": "321"
             }
-            app.get(`/headers`, carousel([
+            resources.app.get(`/headers`, carousel([
                 middlewares.extractHeaders(
                     Object.keys(sentHeaders)
                 ),
                 controller
             ]));
 
-            await fetcher(`/headers`, {
+            await resources.fetcher(`/headers`, {
                 headers: sentHeaders
             });
 
@@ -122,7 +112,7 @@ describe("HTTP Middlewares", () => {
         it("Should extract provided middlewares in the correct order", async () => {
 
 
-            app.get(`/:firstParam/:secondParam`, carousel([
+            resources.app.get(`/:firstParam/:secondParam`, carousel([
                 middlewares.parseParams([
                     "firstParam", "secondParam"
                 ]),
@@ -132,7 +122,7 @@ describe("HTTP Middlewares", () => {
             const firstParamValue = "hehehe";
             const secondParamValue = "isPies";
 
-            await fetcher(`/${firstParamValue}/${secondParamValue}`);
+            await resources.fetcher(`/${firstParamValue}/${secondParamValue}`);
 
             const calledWithRes = controller.mock.calls[0][0];
 
