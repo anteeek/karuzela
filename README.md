@@ -1,6 +1,10 @@
  # Karuzela
 
+[![Build Status](https://travis-ci.org/anteeek/karuzela.svg?branch=master)](https://travis-ci.org/anteeek/karuzela)
+
 TODO: replace those images underneath with markdown code snippets.
+
+
 
  It all boils down to:
 
